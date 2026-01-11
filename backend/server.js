@@ -78,21 +78,27 @@ app.post('/auth/send-otp', async (req, res) => {
 app.post('/auth/verify-otp', async (req, res) => {
   const { mobile, otp } = req.body;
 
-  const storedOTP = otpStore.get(mobile);
+  // Demo OTP Logic: specific OTP for testing deployment
+  const DEMO_OTP = '123456';
 
-  if (!storedOTP || storedOTP.expires < Date.now()) {
-    return res.status(400).json({ success: false, message: 'OTP expired' });
+  if (otp === DEMO_OTP) {
+    // Skip verification for demo OTP
+  } else {
+    const storedOTP = otpStore.get(mobile);
+
+    if (!storedOTP || storedOTP.expires < Date.now()) {
+      return res.status(400).json({ success: false, message: 'OTP expired' });
+    }
+
+    if (storedOTP.otp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+
+    // Clear OTP
+    otpStore.delete(mobile);
   }
-
-  if (storedOTP.otp !== otp) {
-    return res.status(400).json({ success: false, message: 'Invalid OTP' });
-  }
-
-  // Clear OTP
-  otpStore.delete(mobile);
 
   // Create user session
-
   const user = { mobile, role: mobile === '7075816778' ? 'admin' : 'user' };
   const token = jwt.sign(user, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
 
