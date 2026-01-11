@@ -66,7 +66,6 @@ const supportTicketSchema = new mongoose.Schema({
 // Index for efficient queries
 supportTicketSchema.index({ mobile: 1, createdAt: -1 });
 supportTicketSchema.index({ status: 1, createdAt: -1 });
-supportTicketSchema.index({ ticketId: 1 });
 
 const SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
 

@@ -1,0 +1,13 @@
+{
+  "name": "mobile-recharge-app",
+  "version": "1.0.0",
+  "description": "Mobile Recharge Application",
+  "scripts": {
+    "start": "node backend/server.js",
+    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {}
+}

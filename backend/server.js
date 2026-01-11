@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const { connectDB } = require('./database');
 
 // Import schemas
@@ -91,8 +92,9 @@ app.post('/auth/verify-otp', async (req, res) => {
   otpStore.delete(mobile);
 
   // Create user session
+
   const user = { mobile, role: mobile === '7075816778' ? 'admin' : 'user' };
-  const token = jwt.sign(user, 'secret', { expiresIn: '24h' });
+  const token = jwt.sign(user, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
 
   res.json({
     success: true,
@@ -116,7 +118,7 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).json({ success: false, message: 'Access token required' });
   }
 
-  jwt.verify(token, 'secret', (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET || 'secret', (err, user) => {
     if (err) {
       return res.status(403).json({ success: false, message: 'Invalid token' });
     }
@@ -619,6 +621,15 @@ app.get('/test-db', async (req, res) => {
       error: error.message
     });
   }
+});
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // Start server
