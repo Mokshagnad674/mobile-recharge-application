@@ -99,7 +99,7 @@ app.post('/auth/verify-otp', async (req, res) => {
   }
 
   // Create user session
-  const user = { mobile, role: mobile === '7075816778' ? 'admin' : 'user' };
+  const user = { mobile, role: mobile === '6360603552' ? 'admin' : 'user' };
   const token = jwt.sign(user, process.env.JWT_SECRET || 'secret', { expiresIn: '24h' });
 
   res.json({
